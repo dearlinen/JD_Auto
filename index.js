@@ -9,10 +9,10 @@ const fs = require("fs"),
     {execSync} = require("child_process");
 
 // 读取环境变量
-const sckey = process.env.sckey,
-    cookie = process.env.cookie,
-    dualCookie = process.env.dualCookie,
-    otherCookie = process.env.otherCookie;
+const sckey = formatString(process.env.sckey),
+    cookie = formatString(process.env.cookie),
+    dualCookie = formatString(process.env.dualCookie),
+    otherCookie = formatString(process.env.otherCookie);
 
 //文件路径配置
 const scriptPath = "./script.js",
@@ -25,6 +25,11 @@ const getOptions = {
     path: "/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js",
     method: "GET",
 };
+
+// 格式化用户输入
+function formatString(string) {
+    return string.replace(/\s/g, "");
+}
 
 // 写入cookie
 function writeCookie(data) {
