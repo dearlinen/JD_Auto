@@ -33,6 +33,11 @@ function formatString(string) {
 
 // 写入cookie
 function writeCookie(data) {
+
+    if (data) {
+        console.log('脚本下载成功')
+    }
+
     if (!cookie) {
         throw new Error("未配置cookie");
     }
@@ -50,14 +55,16 @@ function writeCookie(data) {
 
     fs.writeFileSync(scriptPath, data, err => {
         if (err) {
-            throw new Error("Error writing on cookie replace");
+            throw new Error("写入cookie到脚本失败");
         }
     });
+    console.log('写入cookie到脚本失败')
 }
 
 //执行签到, 并输出log为文件
 function execScript() {
     execSync(`node '${scriptPath}' >> '${resultPath}'`);
+    console.log('执行并输出log为文件成功')
 }
 
 //server酱推送
@@ -84,7 +91,14 @@ function sendNotify() {
             },
         };
 
-    httpsRequest(postOptions, postData);
+    httpsRequest(postOptions, postData).then(
+        () => {
+            console.log('推送消息发送成功')
+        },
+        (err) => {
+            console.log("推送消息发送失败, 错误为->", err)
+        }
+    );
 }
 
 //https.request 封装
@@ -117,4 +131,9 @@ function httpsRequest(params, postData) {
     });
 }
 
-httpsRequest(getOptions).then(writeCookie).then(execScript).then(sendNotify);
+httpsRequest(getOptions)
+    .then(writeCookie, err => {
+        console.log('脚本下载失败, 错误为->', err)
+    })
+    .then(execScript)
+    .then(sendNotify);
