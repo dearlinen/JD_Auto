@@ -6,10 +6,8 @@ on:
     - cron: 0 13,20 * * *
 
 env:
-  cookie: ${{ secrets.cookie }}
   sckey: ${{ secrets.sckey }}
-  dualCookie: ${{ secrets.dualCookie}}
-  otherCookie: ${{ secrets.otherCookie}}
+  cookies: ${{ secrets.cookies}}
 
 jobs:
   build:
