@@ -8,7 +8,8 @@
 - `Settings` -> `Secrets` 中添加京东cookie和Server 酱sckey
   - `cookies`:放置所有cookie的环境变量，其内容格式必须为`pt_key=xxx;pt_pin=xxx;@jrBody=xxx`
     - `pt_key;pt_pin;`为京东cookie，必填，注意`pt_key`和`pt_pin`结束必须加上`;`
-    - `jrBody`为京东金融签到body，可选填
+    - `jrBody`为京东金融签到body，可选填，如果需要，必须在京东cookie之后加上`@`
+    - 每个签到账号结束必须要加上`,`
   - `sckey`：Server 酱 sckey
 - 为了保证任务没有遗漏,任务每天自动运行两次, 配置之后也可以在`Actions`选项中手动运行
 
