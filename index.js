@@ -36,7 +36,8 @@ function writeCookie(data) {
   }
 
   if (cookies) {
-    data = JSON.stringify(
+      let cookieStr = ""
+    cookieStr = JSON.stringify(
       cookies.split(",").map(str => {
         const arr = str.split("@");
         const obj = {
@@ -48,7 +49,7 @@ function writeCookie(data) {
         return obj
       })
     );
-    data = data.replace(/var OtherKey = ''/, `var OtherKey = '${cookies}'`);
+    data = data.replace(/var OtherKey = ''/, `var OtherKey = '${cookieStr}'`);
   } else {
     throw new Error("未配置cookie");
   }
@@ -58,7 +59,7 @@ function writeCookie(data) {
       throw new Error("写入cookie到脚本失败");
     }
   });
-  console.log("写入cookie到脚本失败");
+  console.log("写入cookie到脚本成功");
 }
 
 //执行签到, 并输出log为文件
