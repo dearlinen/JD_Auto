@@ -49,7 +49,7 @@ function writeCookie(data) {
         return obj
       })
     );
-    data = data.replace(/var OtherKey = ``/, `var OtherKey = '${cookieStr}'`);
+    data = data.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
   } else {
     throw new Error("未配置cookie");
   }
