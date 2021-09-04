@@ -7,7 +7,7 @@ on:
 
 env:
   sckey: ${{ secrets.sckey }}
-  cookies: ${{ secrets.cookies}}
+  cookies: ${{ secrets.cookies }}
 
 jobs:
   build:

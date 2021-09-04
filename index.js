@@ -36,7 +36,7 @@ function writeCookie(data) {
   }
 
   if (cookies) {
-      let cookieStr = ""
+    let cookieStr = "";
     cookieStr = JSON.stringify(
       cookies.split(",").map(str => {
         const arr = str.split("@");
@@ -46,7 +46,7 @@ function writeCookie(data) {
         if (arr[1]) {
           obj.jrBody = arr[1];
         }
-        return obj
+        return obj;
       })
     );
     data = data.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
