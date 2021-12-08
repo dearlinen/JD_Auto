@@ -76,12 +76,8 @@ function sendNotify() {
   }
 
   const result = fs.readFileSync(resultPath, "utf8"),
-    postData = JSON.stringify({
-      title: new Date().toLocaleString("zh-cn"), //未格式化日期
-      desp: result,
-    }),
+    postData = `${encodeURI('title')}=${encodeURI('京东签到成功')}&${encodeURI('desp')}=${encodeURI(result)}`,
     postOptions = {
-      //content-length字段依赖上下文生成, 未放置在文件首
       hostname: "sctapi.ftqq.com",
       path: `/${sckey}.send`,
       port: 443,
