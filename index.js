@@ -76,7 +76,7 @@ function sendNotify() {
   }
 
   const result = fs.readFileSync(resultPath, "utf8"),
-    postData = querystring.stringify({
+    postData = JSON.stringify({
       title: new Date().toLocaleString("zh-cn"), //未格式化日期
       desp: result,
     }),
