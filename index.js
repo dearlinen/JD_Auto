@@ -84,7 +84,7 @@ function sendNotify() {
         : '签到失败，请查看GitHub Actions日志'
 
 
-  const postData = `${encodeURI('title')}=${encodeURI('京东签到成功')}&${encodeURI('desp')}=${encodeURI(result)}`
+  const postData = `${encodeURI('title')}=${encodeURI(title)}&${encodeURI('desp')}=${encodeURI(result)}`
   const postOptions = {
     hostname: "sctapi.ftqq.com",
     path: `/${sckey}.send`,

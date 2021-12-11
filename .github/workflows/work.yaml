@@ -2,6 +2,9 @@ name: JD_Auto_Beans
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
   schedule:
     - cron: 0 13,20 * * *
 
@@ -27,4 +30,3 @@ jobs:
 
       - name: Run Script
         run: node index.js
-
