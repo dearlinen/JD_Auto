@@ -77,10 +77,10 @@ function sendNotify() {
 
   const result = fs.readFileSync(resultPath, "utf8")
   const title =
-    result.match(/(?<=【账号总计】:)\d*/)
-      ? '签到成功，共获得' + result.match(/(?<=【账号总计】:)\d*/) + '京豆'
-      : result.match(/Cookie失效/)
-        ? '京东cookie失效，请更新'
+    result.match(/Cookie失效/)
+      ? '京东cookie失效，请更新'
+      : result.match(/(?<=【账号总计】:)\d*/)
+        ? '签到成功，共获得' + result.match(/(?<=【账号总计】:)\d*/) + '京豆'
         : '签到失败，请查看GitHub Actions日志'
 
 
