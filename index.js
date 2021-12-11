@@ -75,18 +75,26 @@ function sendNotify() {
     return;
   }
 
-  const result = fs.readFileSync(resultPath, "utf8"),
-    postData = `${encodeURI('title')}=${encodeURI('京东签到成功')}&${encodeURI('desp')}=${encodeURI(result)}`,
-    postOptions = {
-      hostname: "sctapi.ftqq.com",
-      path: `/${sckey}.send`,
-      port: 443,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Content-Length": postData.length,
-      },
-    };
+  const result = fs.readFileSync(resultPath, "utf8")
+  const title =
+    result.match(/(?<=【账号总计】:)\d*/)
+      ? '签到成功，共获得' + result.match(/(?<=【账号总计】:)\d*/) + '京豆'
+      : result.match(/Cookie失效/)
+        ? '京东cookie失效，请更新'
+        : '签到失败，请查看GitHub Actions日志'
+
+
+  const postData = `${encodeURI('title')}=${encodeURI('京东签到成功')}&${encodeURI('desp')}=${encodeURI(result)}`
+  const postOptions = {
+    hostname: "sctapi.ftqq.com",
+    path: `/${sckey}.send`,
+    port: 443,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Length": postData.length,
+    },
+  };
 
   httpsRequest(postOptions, postData).then(
     () => {
