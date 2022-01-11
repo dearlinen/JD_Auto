@@ -3,7 +3,7 @@
  * by linen
  */
 
-const fs = require("fs"),
+const fs = require("fs/promises"),
   https = require("https"),
   querystring = require("querystring"),
   { execSync } = require("child_process");
@@ -25,7 +25,7 @@ const getOptions = {
 };
 
 // 格式化用户输入
-function formatString(string) {
+async function formatString(string) {
   return string.replace(/\s/g, "");
 }
 
@@ -54,11 +54,7 @@ function writeCookie(data) {
     throw new Error("未配置cookie");
   }
 
-  fs.writeFileSync(scriptPath, data, err => {
-    if (err) {
-      throw new Error("写入cookie到脚本失败");
-    }
-  });
+  await fs.writeFile(scriptPath, data).catch(e => { throw new Error("写入cookie到脚本失败") })
   console.log("写入cookie到脚本成功");
 }
 
@@ -69,13 +65,15 @@ function execScript() {
 }
 
 //server酱推送
-function sendNotify() {
+async function sendNotify() {
   if (!sckey) {
     console.log("未配置server酱key,任务结束");
     return;
   }
 
-  const result = fs.readFileSync(resultPath, "utf8")
+  const result = await fs.readFile(resultPath, { encoding: 'utf-8' }).catch(e => { throw new Error('读取签到结果失败') })
+
+
   const title =
     result.match(/Cookie失效/)
       ? '京东cookie失效，请更新'
