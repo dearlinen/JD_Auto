@@ -3,7 +3,7 @@
  * by linen
  */
 
-const fs = require("fs/promises"),
+const fs = require("fs").promises,
   https = require("https"),
   querystring = require("querystring"),
   { execSync } = require("child_process");
