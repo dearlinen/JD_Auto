@@ -25,12 +25,12 @@ const getOptions = {
 };
 
 // 格式化用户输入
-async function formatString(string) {
+function formatString(string) {
   return string.replace(/\s/g, "");
 }
 
 // 写入cookie
-function writeCookie(data) {
+async function writeCookie(data) {
   if (data) {
     console.log("脚本下载成功");
   }
