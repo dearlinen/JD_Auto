@@ -44,6 +44,9 @@ build/Release
 node_modules/
 jspm_packages/
 
+#ignore security alert
+package-lock.json
+
 # TypeScript v1 declaration files
 typings/
 
