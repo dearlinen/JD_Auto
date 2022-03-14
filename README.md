@@ -29,3 +29,4 @@
 ## 参考项目
 
 - [NobyDa/Script/JD-DailyBonus](https://github.com/NobyDa/Script/blob/master/JD-DailyBonus/JD_DailyBonus.js)
+##获取Cookie
