@@ -5,7 +5,6 @@
 
 const fs = require("fs").promises,
   https = require("https"),
-  querystring = require("querystring"),
   { execSync } = require("child_process");
 
 // 读取环境变量
@@ -36,26 +35,37 @@ async function writeCookie(data) {
   }
 
   if (cookies) {
-    let cookieStr = "";
-    cookieStr = JSON.stringify(
-      cookies.split(",").map(str => {
-        const arr = str.split("@");
-        const obj = {
-          cookie: arr[0],
-        };
-        if (arr[1]) {
-          obj.jrBody = arr[1];
+    const matched = cookies.match(/pt_key=.+,pt_pin=.+(,jrBody=.+0)?/gi)
+
+    if (!matched) {
+      throw new Error('cookie格式错误')
+    }
+
+    const cookie = matched.map(item => {
+      const obj = {}
+      item.replace(/(pt_key=\w+,pt_pin=\w+)(,jr_body=\w+)?/g, (match, p1, p2) => {
+        if (p1) {
+          obj.cookie = p1
         }
-        return obj;
+        if (p2) {
+          obj.body = p2
+        }
       })
+      return obj
+    })
+
+    let cookieStr = JSON.stringify(
+      cookie
     );
+
     data = data.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
+    await fs.writeFile(scriptPath, data)
+    .catch(e => { throw new Error("写入cookie到脚本失败") })
+    console.log("写入cookie到脚本成功");
   } else {
     throw new Error("未配置cookie");
   }
 
-  await fs.writeFile(scriptPath, data).catch(e => { throw new Error("写入cookie到脚本失败") })
-  console.log("写入cookie到脚本成功");
 }
 
 //执行签到, 并输出log为文件
