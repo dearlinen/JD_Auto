@@ -32,7 +32,7 @@ async function writeCookie(data) {
   if (cookies) {
 
     function cookieToStr() {
-      const matched = cookies.match(/pt_key=.+;pt_pin=.+;/gi)
+      const matched = cookies.match(/.+/gi)
       if (!matched) {
         throw new Error('cookie格式错误')
       }
