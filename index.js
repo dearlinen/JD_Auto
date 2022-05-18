@@ -73,7 +73,7 @@ function execScript() {
 //server酱推送
 async function sendNotify() {
   if (!sckey) {
-    console.log("未配置server酱key,任务结束");
+    console.log("未配置server酱sckey,任务结束");
     return;
   }
 
@@ -83,8 +83,8 @@ async function sendNotify() {
   const title =
     result.match(/Cookie失效/)
       ? '京东cookie失效，请更新'
-      : result.match(/(?<=【账号总计】:)\d*/)
-        ? '签到成功，共获得' + result.match(/(?<=【账号总计】:)\d*/) + '京豆'
+      : /(?<=账号总计】: )[^【]+/.exec(result)[0]
+        ? '签到成功，账户总计' +/(?<=账号总计】: )[^【]+/.exec(result)[0]
         : '签到失败，请查看GitHub Actions日志'
 
 
