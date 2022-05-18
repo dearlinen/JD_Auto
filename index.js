@@ -8,9 +8,8 @@ const fs = require("fs").promises,
   { execSync } = require("child_process");
 
 // 读取环境变量
-const sckey = formatString(process.env.sckey),
-  cookies = formatString(process.env.cookies);
-
+const sckey = process.env.sckey;
+cookies = process.env.cookies;
 //文件路径配置
 const scriptPath = "./script.js",
   resultPath = "./result.txt";
@@ -23,10 +22,6 @@ const getOptions = {
   method: "GET",
 };
 
-// 格式化用户输入
-function formatString(string) {
-  return string.replace(/\s/g, "");
-}
 
 // 写入cookie
 async function writeCookie(data) {
@@ -35,32 +30,33 @@ async function writeCookie(data) {
   }
 
   if (cookies) {
-    const matched = cookies.match(/pt_key=.+,pt_pin=.+(,jrBody=.+0)?/gi)
 
-    if (!matched) {
-      throw new Error('cookie格式错误')
+    function cookieToStr() {
+      const matched = cookies.match(/pt_key=.+;pt_pin=.+;/gi)
+      if (!matched) {
+        throw new Error('cookie格式错误')
+      }
+      function getCookie(name, text) {
+        return new RegExp(`${name}=([^;]+)`).exec(text) || [];
+      }
+      const arr = matched.map(item => {
+        const obj = {}
+        const jrbody = getCookie('jr_body', item)[1]
+        const cookie = `pt_key=${getCookie('pt_key', item)[1]};pt_pin=${getCookie('pt_pin', item)[1]};`
+        obj.cookie = cookie
+        if (jrbody) {
+          obj.jrbody = jrbody
+        }
+        return obj
+      }
+      )
+      return JSON.stringify(arr)
     }
 
-    const cookie = matched.map(item => {
-      const obj = {}
-      item.replace(/(pt_key=\w+,pt_pin=\w+)(,jr_body=\w+)?/g, (match, p1, p2) => {
-        if (p1) {
-          obj.cookie = p1
-        }
-        if (p2) {
-          obj.body = p2
-        }
-      })
-      return obj
-    })
-
-    let cookieStr = JSON.stringify(
-      cookie
-    );
-
+    const cookieStr = cookieToStr()
     data = data.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
     await fs.writeFile(scriptPath, data)
-    .catch(e => { throw new Error("写入cookie到脚本失败") })
+      .catch(e => { throw new Error("写入cookie到脚本失败") })
     console.log("写入cookie到脚本成功");
   } else {
     throw new Error("未配置cookie");
