@@ -14,22 +14,30 @@ cookies = process.env.cookies;
 const scriptPath = "./script.js",
   resultPath = "./result.txt";
 
-//https.request 配置参数
-const getOptions = {
-  hostname: "raw.githubusercontent.com",
-  port: 443,
-  path: "/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js",
-  method: "GET",
-};
-
-
 // 写入cookie
-async function writeCookie(data) {
-  if (data) {
-    console.log("脚本下载成功");
-  }
+async function writeCookie() {
 
   if (cookies) {
+
+    async function downloadScript() {
+      let res = ''
+      //https.request 配置参数
+      const getOptions = {
+        hostname: "raw.githubusercontent.com",
+        port: 443,
+        path: "/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js",
+        method: "GET",
+
+      };
+      try {
+        res = await httpsRequest(getOptions)
+        console.log('下载脚本成功');
+      } catch (error) {
+        throw new Error('脚本下载失败')
+      }
+      return res
+    }
+
 
     function cookieToStr() {
       const matched = cookies.match(/.+/gi)
@@ -53,10 +61,14 @@ async function writeCookie(data) {
       return JSON.stringify(arr)
     }
 
+
+    const script = await downloadScript()
     const cookieStr = cookieToStr()
-    data = data.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
+
+    const data = script.replace(/var OtherKey = ``/, `var OtherKey = \`${cookieStr}\``);
     await fs.writeFile(scriptPath, data)
       .catch(e => { throw new Error("写入cookie到脚本失败") })
+
     console.log("写入cookie到脚本成功");
   } else {
     throw new Error("未配置cookie");
@@ -84,7 +96,7 @@ async function sendNotify() {
     result.match(/Cookie失效/)
       ? '京东cookie失效，请更新'
       : /(?<=账号总计】: )[^【]+/.exec(result)[0]
-        ? '签到成功，账户总计' +/(?<=账号总计】: )[^【]+/.exec(result)[0]
+        ? '签到成功，账户总计' + /(?<=账号总计】: )[^【]+/.exec(result)[0]
         : '签到失败，请查看GitHub Actions日志'
 
 
@@ -139,10 +151,6 @@ function httpsRequest(params, postData) {
     req.end();
   });
 }
-
-httpsRequest(getOptions)
-  .then(writeCookie, err => {
-    console.log("脚本下载失败, 错误为->", err);
-  })
+writeCookie()
   .then(execScript)
   .then(sendNotify);
