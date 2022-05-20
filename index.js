@@ -18,7 +18,6 @@ const scriptPath = "./script.js",
 async function writeCookie() {
 
   if (cookies) {
-
     async function downloadScript() {
       let res = ''
       //https.request 配置参数
@@ -89,18 +88,39 @@ async function sendNotify() {
     return;
   }
 
-  const result = await fs.readFile(resultPath, { encoding: 'utf-8' }).catch(e => { throw new Error('读取签到结果失败') })
+  const desp = await fs.readFile(resultPath, { encoding: 'utf-8' })
+    .catch(e => { throw new Error('读取签到结果失败') })
 
 
-  const title =
-    result.match(/Cookie失效/)
-      ? '京东cookie失效，请更新'
-      : /(?<=账号总计】: )[^【]+/.exec(result)[0]
-        ? '签到成功，账户总计' + /(?<=账号总计】: )[^【]+/.exec(result)[0]
-        : '签到失败，请查看GitHub Actions日志'
+  function genTitle(str) {
+    if (str.match(/Cookie失效/)) {
+      return '京东cookie失效，请更新'
+    } else {
+      const result = /【签到奖励】:.+$/m.exec(str)[0]
+      if (result) {
+        return `签到成功=>${result}`
+      }
+      return '签到失败,请查看GitHub Actions日志'
+    }
+  }
 
+  function strToUrlEncoded(obj) {
+    let str = ''
+    for (const key in obj) {
+      if (Object.hasOwnProperty.call(obj, key)) {
+        const element = obj[key];
+        str += `${encodeURI(key)}=${encodeURI(element)}&`
+      }
+    }
 
-  const postData = `${encodeURI('title')}=${encodeURI(title)}&${encodeURI('desp')}=${encodeURI(result)}`
+    return str.replace(/&$/, '')
+  }
+
+  const title = genTitle(result)
+  const postData = strToUrlEncoded({
+    title,
+    desp
+  })
   const postOptions = {
     hostname: "sctapi.ftqq.com",
     path: `/${sckey}.send`,
@@ -151,6 +171,7 @@ function httpsRequest(params, postData) {
     req.end();
   });
 }
+
 writeCookie()
   .then(execScript)
   .then(sendNotify);
