@@ -96,7 +96,7 @@ async function sendNotify() {
     if (str.match(/Cookie失效/)) {
       return '京东cookie失效，请更新'
     } else {
-      const result = /【签到奖励】:.+$/m.exec(str)[0]
+      const result = /(?<=【签到奖励】:).+/m.exec(str)[0]
       if (result) {
         return `签到成功=>${result}`
       }
