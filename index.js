@@ -116,7 +116,7 @@ async function sendNotify() {
     return str.replace(/&$/, '')
   }
 
-  const title = genTitle(result)
+  const title = genTitle(desp)
   const postData = strToUrlEncoded({
     title,
     desp
