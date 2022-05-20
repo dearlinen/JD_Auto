@@ -93,15 +93,10 @@ async function sendNotify() {
 
 
   function genTitle(str) {
-    console.log('str :>> ', str);
     if (str.match(/Cookie失效/)) {
       return '京东cookie失效，请更新'
     } else {
-      const result = /(?<=【签到奖励】:).+/m.exec(str)[0]
-      if (result) {
-        return `签到成功=>${result}`
-      }
-      return '签到失败,请查看GitHub Actions日志'
+        return `签到成功`
     }
   }
 
