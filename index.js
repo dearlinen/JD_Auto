@@ -17,6 +17,8 @@ const scriptPath = "./script.js",
 // 写入cookie
 async function writeCookie() {
 
+  console.log("开始写入cookie");
+
   if (cookies) {
     async function downloadScript() {
       let res = ''
@@ -77,12 +79,18 @@ async function writeCookie() {
 
 //执行签到, 并输出log为文件
 function execScript() {
-  execSync(`node '${scriptPath}' >> '${resultPath}'`);
+  console.log('开始执行脚本');
+  try {
+    execSync(`node '${scriptPath}' >> '${resultPath}'`)
+  } catch (error) {
+    throw new Error(`执行脚本失败, 错误为->${error}`)
+  }
   console.log("执行并输出log为文件成功");
 }
 
 //server酱推送
 async function sendNotify() {
+  console.log('开始发送消息');
   if (!sckey) {
     console.log("未配置server酱sckey,任务结束");
     return;
@@ -96,7 +104,7 @@ async function sendNotify() {
     if (str.match(/Cookie失效/)) {
       return '京东cookie失效，请更新'
     } else {
-        return `签到成功`
+      return `签到成功`
     }
   }
 
